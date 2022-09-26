@@ -88,6 +88,11 @@ _Below is an example of how you can instruct your audience on installing and set
 
 or 
 
+```sh
+cargo install bonky
+```
+Note: name of the executable is `bonk` though the crate is named bonky.
+
 Download the binary from the releases page
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
