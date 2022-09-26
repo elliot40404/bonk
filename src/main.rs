@@ -1,33 +1,45 @@
 use std::fs::File;
-use std::path::Path;
+use std::path::PathBuf;
 use std::{env, fs};
 
 fn check_if_dir(dir: &str) -> bool {
-    if dir.contains('/') || dir.contains('\\') {
-        return true;
-    } else {
-        return false;
-    }
+    dir.contains("\\") || dir.contains("/")
+}
+
+fn print_help() {
+    println!("
+Description:
+  A blazingly fast alternative to the classic 'touch' command.
+  Can create a single file or multiple files even in nested directories.
+Options: 
+-h, --help: Show this help message
+Example:
+  bonk bonkers.txt
+  bonk bonkers.txt bonkers2.txt
+  bonk bonky/chonky/boi.txt
+  bonk bonky/chonky/ bonkers.txt
+");
 }
 
 fn main() {
-    env::args().skip(1).for_each(|x| {
-        if check_if_dir(&x) {
-            let sep = if x.contains('/') { '/' } else { '\\' };
-            let mut dir = x.split(sep).collect::<Vec<&str>>();
-            if Path::new(dir[0]).exists() {
-                return println!("{}: A file with same name already exists", dir[0]);
-            }
-            dir.pop();
-            let dir = dir.join(&sep.to_string());
-            fs::create_dir_all(&dir).expect("Directory already exists");
-            if !Path::new(&x).exists() {
-                File::create(String::from(x)).expect("Unable to create file in directory");
+    if (env::args().nth(1).unwrap() == "-h") || (env::args().nth(1).unwrap() == "--help") {
+        print_help();
+        return;
+    }
+    let args = env::args_os()
+        .map(|x| PathBuf::from(x))
+        .skip(1)
+        .collect::<Vec<_>>();
+    for arg in &args {
+        if check_if_dir(arg.to_str().unwrap()) {
+            if arg.to_str().unwrap().ends_with("/") || arg.to_str().unwrap().ends_with("\\") {
+                fs::create_dir_all(arg).expect("Failed to create directory");
+            } else {
+                fs::create_dir_all(arg.parent().unwrap()).expect("Failed to create directory");
+                File::create(arg.to_owned()).expect("failed to create file");
             }
         } else {
-            if !Path::new(&x).exists() {
-                File::create(String::from(x)).expect("Unable to create file");
-            }
+            File::create(arg.to_owned()).expect("failed to create file");
         }
-    });
+    }
 }

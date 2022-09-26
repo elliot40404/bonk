@@ -134,8 +134,6 @@ bonk src/bonky/mod.rs
 
 ## Roadmap
 
--   [ ] Add Changelog 
--   [ ] Add Check for exitsing dir and create file inside
 -   [ ] Add timestamp modification functionality
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
