@@ -7,7 +7,8 @@ fn check_if_dir(dir: &str) -> bool {
 }
 
 fn print_help() {
-    println!("
+    println!(
+        "
 Description:
   A blazingly fast alternative to the classic 'touch' command.
   Can create a single file or multiple files even in nested directories.
@@ -18,7 +19,8 @@ Example:
   bonk bonkers.txt bonkers2.txt
   bonk bonky/chonky/boi.txt
   bonk bonky/chonky/ bonkers.txt
-");
+"
+    );
 }
 
 fn main() {
@@ -36,10 +38,14 @@ fn main() {
                 fs::create_dir_all(arg).expect("Failed to create directory");
             } else {
                 fs::create_dir_all(arg.parent().unwrap()).expect("Failed to create directory");
-                File::create(arg.to_owned()).expect("failed to create file");
+                if !arg.exists() {
+                    File::create(arg.to_owned()).expect("failed to create file");
+                }
             }
         } else {
-            File::create(arg.to_owned()).expect("failed to create file");
+            if !arg.exists() {
+                File::create(arg.to_owned()).expect("failed to create file");
+            }
         }
     }
 }
