@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use std::{env, fs};
 
 fn check_if_dir(dir: &str) -> bool {
-    dir.contains("\\") || dir.contains("/")
+    dir.contains('\\') || dir.contains('/')
 }
 
 fn print_help() {
@@ -24,28 +24,28 @@ Example:
 }
 
 fn main() {
-    if (env::args().nth(1).unwrap() == "-h") || (env::args().nth(1).unwrap() == "--help") {
+    if (env::args().len() == 1 || env::args().nth(1).unwrap() == "-h")
+        || (env::args().nth(1).unwrap() == "--help")
+    {
         print_help();
         return;
     }
     let args = env::args_os()
-        .map(|x| PathBuf::from(x))
+        .map(PathBuf::from)
         .skip(1)
         .collect::<Vec<_>>();
     for arg in &args {
         if check_if_dir(arg.to_str().unwrap()) {
-            if arg.to_str().unwrap().ends_with("/") || arg.to_str().unwrap().ends_with("\\") {
+            if arg.to_str().unwrap().ends_with('/') || arg.to_str().unwrap().ends_with('\\') {
                 fs::create_dir_all(arg).expect("Failed to create directory");
             } else {
                 fs::create_dir_all(arg.parent().unwrap()).expect("Failed to create directory");
                 if !arg.exists() {
-                    File::create(arg.to_owned()).expect("failed to create file");
+                    File::create(arg).expect("failed to create file");
                 }
             }
-        } else {
-            if !arg.exists() {
-                File::create(arg.to_owned()).expect("failed to create file");
-            }
+        } else if !arg.exists() {
+            File::create(arg).expect("failed to create file");
         }
     }
 }
