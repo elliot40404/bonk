@@ -23,12 +23,11 @@ Example:
     );
 }
 
-fn main() {
+fn try_main() -> Result<(), Box<dyn std::error::Error>> {
     if (env::args().len() == 1 || env::args().nth(1).unwrap() == "-h")
         || (env::args().nth(1).unwrap() == "--help")
     {
         print_help();
-        return;
     }
     let args = env::args_os()
         .map(PathBuf::from)
@@ -37,45 +36,23 @@ fn main() {
     for arg in &args {
         if check_if_dir(arg.to_str().unwrap()) {
             if arg.to_str().unwrap().ends_with('/') || arg.to_str().unwrap().ends_with('\\') {
-                match fs::create_dir_all(arg) {
-                    Ok(_) => {}
-                    Err(_) => {
-                        println!(
-                            "Error: Could not create directory '{}'",
-                            arg.to_str().unwrap()
-                        );
-                        std::process::exit(1);
-                    }
-                }
+                fs::create_dir_all(arg)?;
             } else {
-                match fs::create_dir_all(arg.parent().unwrap()) {
-                    Ok(_) => {}
-                    Err(_) => {
-                        println!(
-                            "Error: Could not create directory '{}'",
-                            arg.parent().unwrap().to_str().unwrap()
-                        );
-                        std::process::exit(1);
-                    }
-                }
+                fs::create_dir_all(arg.parent().unwrap())?;
                 if !arg.exists() {
-                    match File::create(arg) {
-                        Ok(_) => {}
-                        Err(_) => {
-                            println!("Error: Could not create file '{}'", arg.to_str().unwrap());
-                            std::process::exit(1);
-                        }
-                    }
+                    File::create(arg)?;
                 }
             }
         } else if !arg.exists() {
-            match File::create(arg) {
-                Ok(_) => {}
-                Err(_) => {
-                    println!("Error: Could not create file '{}'", arg.to_str().unwrap());
-                    std::process::exit(1);
-                }
-            }
+            File::create(arg)?;
         }
+    }
+    Ok(())
+}
+
+fn main() {
+    if let Err(_e) = try_main() {
+        println!("Something went wrong!");
+        std::process::exit(1);
     }
 }

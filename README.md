@@ -3,6 +3,7 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
+[![Crates.io][crates-shield]][crates-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
@@ -101,6 +102,16 @@ Download the binary from the releases page
 
 ## Usage
 
+Print Help
+
+```bash
+bonk -h
+```
+
+```bash
+bonk --help
+```
+
 Create a file
 
 ```bash
@@ -137,6 +148,7 @@ bonk src/bonky/mod.rs
 
 ## Roadmap
 
+-   [ ] Handle Non-UTF8 files/folders
 -   [ ] Add timestamp modification functionality
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
@@ -173,7 +185,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 [forks-shield]: https://img.shields.io/github/forks/elliot40404/bonk.svg?style=for-the-badge
 [forks-url]: https://github.com/elliot40404/bonk/network/members
 [stars-shield]: https://img.shields.io/github/stars/elliot40404/bonk.svg?style=for-the-badge
+[crates-shield]: https://img.shields.io/crates/d/bonky?style=for-the-badge
 [stars-url]: https://github.com/elliot40404/bonk/stargazers
+[crates-url]: https://crates.io/crates/bonky
 [issues-shield]: https://img.shields.io/github/issues/elliot40404/bonk.svg?style=for-the-badge
 [issues-url]: https://github.com/elliot40404/bonk/issues
 [license-shield]: https://img.shields.io/github/license/elliot40404/bonk.svg?style=for-the-badge
