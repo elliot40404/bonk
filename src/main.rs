@@ -37,15 +37,45 @@ fn main() {
     for arg in &args {
         if check_if_dir(arg.to_str().unwrap()) {
             if arg.to_str().unwrap().ends_with('/') || arg.to_str().unwrap().ends_with('\\') {
-                fs::create_dir_all(arg).expect("Failed to create directory");
+                match fs::create_dir_all(arg) {
+                    Ok(_) => {}
+                    Err(_) => {
+                        println!(
+                            "Error: Could not create directory '{}'",
+                            arg.to_str().unwrap()
+                        );
+                        std::process::exit(1);
+                    }
+                }
             } else {
-                fs::create_dir_all(arg.parent().unwrap()).expect("Failed to create directory");
+                match fs::create_dir_all(arg.parent().unwrap()) {
+                    Ok(_) => {}
+                    Err(_) => {
+                        println!(
+                            "Error: Could not create directory '{}'",
+                            arg.parent().unwrap().to_str().unwrap()
+                        );
+                        std::process::exit(1);
+                    }
+                }
                 if !arg.exists() {
-                    File::create(arg).expect("failed to create file");
+                    match File::create(arg) {
+                        Ok(_) => {}
+                        Err(_) => {
+                            println!("Error: Could not create file '{}'", arg.to_str().unwrap());
+                            std::process::exit(1);
+                        }
+                    }
                 }
             }
         } else if !arg.exists() {
-            File::create(arg).expect("failed to create file");
+            match File::create(arg) {
+                Ok(_) => {}
+                Err(_) => {
+                    println!("Error: Could not create file '{}'", arg.to_str().unwrap());
+                    std::process::exit(1);
+                }
+            }
         }
     }
 }
