@@ -24,8 +24,8 @@ Example:
 }
 
 fn try_main() -> Result<(), Box<dyn std::error::Error>> {
-    if (env::args().len() == 1 || env::args().nth(1).unwrap() == "-h")
-        || (env::args().nth(1).unwrap() == "--help")
+    if (env::args().len() == 1 || env::args().nth(1).ok_or("Error")? == "-h")
+        || (env::args().nth(1).ok_or("Error")? == "--help")
     {
         print_help();
     }
@@ -34,11 +34,13 @@ fn try_main() -> Result<(), Box<dyn std::error::Error>> {
         .skip(1)
         .collect::<Vec<_>>();
     for arg in &args {
-        if check_if_dir(arg.to_str().unwrap()) {
-            if arg.to_str().unwrap().ends_with('/') || arg.to_str().unwrap().ends_with('\\') {
+        if check_if_dir(arg.to_str().ok_or("Error")?) {
+            if arg.to_str().ok_or("Error")?.ends_with('/')
+                || arg.to_str().ok_or("Error")?.ends_with('\\')
+            {
                 fs::create_dir_all(arg)?;
             } else {
-                fs::create_dir_all(arg.parent().unwrap())?;
+                fs::create_dir_all(arg.parent().ok_or("Error")?)?;
                 if !arg.exists() {
                     File::create(arg)?;
                 }
@@ -53,6 +55,7 @@ fn try_main() -> Result<(), Box<dyn std::error::Error>> {
 fn main() {
     if let Err(_e) = try_main() {
         println!("Something went wrong!");
+        eprintln!("Error: {}", _e);
         std::process::exit(1);
     }
 }
