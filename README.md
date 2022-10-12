@@ -94,7 +94,11 @@ cargo install bonky
 ```
 Note: name of the executable is `bonk` though the crate is named bonky.
 
-Download the binary from the releases page
+```sh
+sudo curl -L https://github.com/elliot40404/bonk/releases/latest/download/bonk_linux_x64 -o /usr/local/bin/bonk && sudo chmod +x /usr/local/bin/bonk
+```
+
+Download the binary from the releases page [here](https://github.com/elliot40404/bonk/releases/latest)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
