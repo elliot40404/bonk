@@ -28,6 +28,7 @@ fn try_main() -> Result<(), Box<dyn std::error::Error>> {
         || (env::args().nth(1).ok_or("Error")? == "--help")
     {
         print_help();
+        return Ok(());
     }
     let args = env::args_os()
         .map(PathBuf::from)
