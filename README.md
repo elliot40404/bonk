@@ -84,10 +84,22 @@ _Below is an example of how you can instruct your audience on installing and set
 1. Build and Install the rust binary
     ```sh
     cd bonk
+    cargo build --release
     cargo install --path .
     ```
 
 or 
+
+```pwsh
+# install directly from this repo
+scoop install https://raw.githubusercontent.com/elliot40404/bonk/master/bonk.json
+```
+
+```pwsh
+# Additionally you can add my bucket and install from there
+scoop bucket add elliot
+scoop install elliot/bonk
+```
 
 ```sh
 cargo install bonky
