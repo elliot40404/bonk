@@ -1,44 +1,63 @@
-use std::fs::File;
-use std::path::PathBuf;
-use std::{env, fs};
+use std::{
+    env,
+    fs::{self, File},
+    path::PathBuf,
+    process::exit,
+};
 
-fn check_if_dir(dir: &str) -> bool {
-    dir.contains('\\') || dir.contains('/')
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const NAME: &'static str = env!("CARGO_PKG_NAME");
+
+fn main() {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() > 1 {
+        check_builtins(&args);
+    } else {
+        println!("No command provided");
+        help();
+    }
+    create(&args).unwrap_or_else(|err| {
+        println!("Error: {}", err);
+    });
 }
 
-fn print_help() {
+fn check_builtins(args: &[String]) {
+    let inbuilts = vec!["--help", "--version", "-h", "-v"];
+    if inbuilts.contains(&args[1].as_str()) {
+        match args[1].as_str() {
+            "--help" | "-h" => help(),
+            "--version" | "-v" => version(),
+            _ => println!("Invalid command"),
+        }
+        exit(0);
+    }
+}
+
+fn help() {
     println!(
         "
 Description:
-  A blazingly fast alternative to the classic 'touch' command.
-  Can create a single file or multiple files even in nested directories.
+  A blazingly fast alternative to the classic 'touch' command with a sprinkle of mkdir
 Options: 
 -h, --help: Show this help message
 Example:
-  bonk bonkers.txt
-  bonk bonkers.txt bonkers2.txt
-  bonk bonky/chonky/boi.txt
-  bonk bonky/chonky/ bonkers.txt
+  bonk foo.txt bar.txt - Creates foo.txt and bar.txt
+  bonk foo/bar.txt - Creates bar.txt in foo directory
+  bonk foo/foobar.txt bar.txt baz/ - Creates foobar.txt in foo directory, 
+  bar.txt in current directory and baz directory
 "
     );
 }
 
-fn try_main() -> Result<(), Box<dyn std::error::Error>> {
-    if (env::args().len() == 1 || env::args().nth(1).ok_or("Error")? == "-h")
-        || (env::args().nth(1).ok_or("Error")? == "--help")
-    {
-        print_help();
-        return Ok(());
-    }
-    let args = env::args_os()
-        .map(PathBuf::from)
-        .skip(1)
-        .collect::<Vec<_>>();
-    for arg in &args {
+fn version() {
+    println!("{} {}", NAME, VERSION);
+}
+
+fn create(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
+    let fargs = args.iter().map(PathBuf::from).skip(1).collect::<Vec<_>>();
+    for arg in &fargs {
         if check_if_dir(arg.to_str().ok_or("Error")?) {
-            if arg.to_str().ok_or("Error")?.ends_with('/')
-                || arg.to_str().ok_or("Error")?.ends_with('\\')
-            {
+            if arg.to_str().ok_or("Error")?.ends_with('/') || arg.to_str().ok_or("Error")?.ends_with('\\') {
                 fs::create_dir_all(arg)?;
             } else {
                 fs::create_dir_all(arg.parent().ok_or("Error")?)?;
@@ -53,10 +72,6 @@ fn try_main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn main() {
-    if let Err(_e) = try_main() {
-        println!("Something went wrong!");
-        eprintln!("Error: {}", _e);
-        std::process::exit(1);
-    }
+fn check_if_dir(dir: &str) -> bool {
+    dir.contains('\\') || dir.contains('/')
 }

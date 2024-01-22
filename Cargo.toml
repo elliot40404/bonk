@@ -1,19 +1,17 @@
 [package]
 name = "bonky"
-version = "0.3.2"
+version = "0.4.0"
 edition = "2021"
 authors = ["Elliot40404"]
 description = "The blazingly fast touch alternative written in rust. Made for the sole purpose to create files."
-rust-version = "1.63.0"
 license = "MIT"
 repository = "https://github.com/elliot40404/bonk"
 homepage = "https://github.com/elliot40404/bonk"
 readme = "README.md"
-keywords = ["touch", "create", "file", "directory", "bonk"]
-categories = ["command-line-utilities"]
+keywords = ["touch", "create", "file", "directory", "bonk", "mkdir", "filesystem"]
+categories = ["command-line-utilities", "development-tools"]
 exclude = ['bonk.png']
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [[bin]]
 name = "bonk"
 path = "src/main.rs"
