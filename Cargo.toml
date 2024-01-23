@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/elliot40404/bonk"
 homepage = "https://github.com/elliot40404/bonk"
 readme = "README.md"
-keywords = ["touch", "create", "file", "directory", "mkdir", "filesystem"]
+keywords = ["touch", "create", "file", "directory", "mkdir"] 
 categories = ["command-line-utilities", "development-tools"]
 exclude = ['bonk.png']
 
