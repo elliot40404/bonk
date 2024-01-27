@@ -12,13 +12,13 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 {
         check_builtins(&args);
+        create(&args).unwrap_or_else(|err| {
+            println!("Error: {}", err);
+        });
     } else {
         println!("No command provided");
         help();
     }
-    create(&args).unwrap_or_else(|err| {
-        println!("Error: {}", err);
-    });
 }
 
 fn check_builtins(args: &[String]) {
@@ -40,6 +40,7 @@ Description:
   A blazingly fast alternative to the classic 'touch' command with a sprinkle of mkdir
 Options: 
 -h, --help: Show this help message
+-v, --version: Show version
 Example:
   bonk foo.txt bar.txt - Creates foo.txt and bar.txt
   bonk foo/bar.txt - Creates bar.txt in foo directory
@@ -57,7 +58,9 @@ fn create(args: &[String]) -> Result<(), Box<dyn std::error::Error>> {
     let fargs = args.iter().map(PathBuf::from).skip(1).collect::<Vec<_>>();
     for arg in &fargs {
         if check_if_dir(arg.to_str().ok_or("Error")?) {
-            if arg.to_str().ok_or("Error")?.ends_with('/') || arg.to_str().ok_or("Error")?.ends_with('\\') {
+            if arg.to_str().ok_or("Error")?.ends_with('/')
+                || arg.to_str().ok_or("Error")?.ends_with('\\')
+            {
                 fs::create_dir_all(arg)?;
             } else {
                 fs::create_dir_all(arg.parent().ok_or("Error")?)?;
